@@ -13,18 +13,18 @@ class Sortable {
     // make line draggable
     element.attributes["draggable"] = "true";
     // add drag start handler
-    element.on.dragStart.add((event) {
+    element.onDragStart.listen((event) {
       // use the drag icon for moving
       event.dataTransfer.effectAllowed = "move";
       _dragElement = event.currentTarget;
     });
 
     // this prevents the animation that occurs when a drag fails
-    element.on.dragOver.add((event) {
+    element.onDragOver.listen((event) {
       event.preventDefault();
     });
     // notify the delegate that a line was dragged over this so it can move them
-    element.on.dragEnter.add((MouseEvent event) {
+    element.onDragEnter.listen((MouseEvent event) {
       
       Element lastEnter = _fromElement;
       
@@ -40,7 +40,7 @@ class Sortable {
         (event.currentTarget as Element).insertAdjacentElement("beforeBegin", _dragElement);
       }
     });
-    element.on.dragEnd.add((event) {
+    element.onDragEnd.listen((event) {
       // callback
     });
   }
