@@ -36,6 +36,11 @@ class Assortment {
   // The element begin dragged
   Element _dragElement;
   
+  // TODO figure out how to provide a stream
+  // TODO which subclass of Stream to use? _EventStream?
+  //Stream _onDragStart = new Stream<CustomEvent>();
+  //Stream<CustomEvent> onDragStart => 
+  
   /// Add an element to the assortment
   void addElement(Element element) {
     // add to the element set
