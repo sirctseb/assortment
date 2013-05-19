@@ -36,10 +36,13 @@ class Assortment {
   // The element begin dragged
   Element _dragElement;
   
-  // TODO figure out how to provide a stream
-  // TODO which subclass of Stream to use? _EventStream?
-  //Stream _onDragStart = new Stream<CustomEvent>();
-  //Stream<CustomEvent> onDragStart => 
+  // Expose event streams
+  StreamController<AssortmentEvent> _dragStartStreamController = new StreamController<AssortmentEvent>();
+  Stream<AssortmentEvent> get onDragStart => _dragStartStreamController.stream;
+  StreamController<AssortmentEvent> _dragEnterStreamController = new StreamController<AssortmentEvent>();
+  Stream<AssortmentEvent> get onDragEnter => _dragEnterStreamController.stream;
+  StreamController<AssortmentEvent> _dragEndStreamController = new StreamController<AssortmentEvent>();
+  Stream<AssortmentEvent> get onDragEnd => _dragEndStreamController.stream;
   
   /// Add an element to the assortment
   void addElement(Element element) {
@@ -55,6 +58,9 @@ class Assortment {
       event.dataTransfer.effectAllowed = "move";
       // set the drag element
       _dragElement = event.currentTarget;
+      // add assortment event to stream
+      // TODO only if subscriber?
+      _dragStartStreamController.add(new AssortmentEvent(event, _dragElement));
     });
 
     // prevent the animation that occurs when a drag fails
@@ -85,11 +91,15 @@ class Assortment {
       } else {
         (event.currentTarget as Element).insertAdjacentElement("beforeBegin", _dragElement);
       }
+      
+      // add assortment event to stream
+      _dragEnterStreamController.add(new AssortmentEvent(event, _dragElement, enterElement: event.currentTarget, fromElement: _fromElement));
     });
     
     // add end handler
     element.onDragEnd.listen((event) {
-      // callback
+      // add assortment event to stream
+      _dragEndStreamController.add(new AssortmentEvent(event, _dragElement));
     });
   }
   /// Add a set of elements to the assortment
