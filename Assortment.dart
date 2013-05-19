@@ -93,7 +93,7 @@ class Assortment {
     });
   }
   /// Add a set of elements to the assortment
-  void addElements(Collection<Element> elements) {
+  void addElements(Iterable<Element> elements) {
     // add individually
     elements.forEach((element) => addElement(element));
   }
