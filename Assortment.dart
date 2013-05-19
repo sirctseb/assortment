@@ -2,19 +2,19 @@ part of Tabasci;
 
 // TODO can we subclass from Event?
 /// An event that occurs during a drag on a sortable element 
-class AssortmentEventDetails {
+// TODO event type code?
+class AssortmentEvent {
   /// The [MouseEvent] that instigated this event
   MouseEvent mouseEvent;
   /// The [Element] being dragged
   Element dragElement;
   /// The [Element] being entered
   Element enterElement;
-  CloseEvent blah;
   /// The [Element] the cursor is coming from
   Element fromElement;
   
-  AssortmentEventDetails(MouseEvent this.mouseEvent, Element this.dragElement,
-      { Element this.enterElement, Element this.fromElement });
+  AssortmentEvent(MouseEvent this.mouseEvent, Element this.dragElement,
+      { Element this.enterElement, Element this.fromElement }) {}
 }
 
 /// A simple collection of elements that can be sorted by dragging and dropping
