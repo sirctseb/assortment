@@ -1,5 +1,5 @@
 name: Assortment
-version: 0.0.0
+version: 0.1.0
 author: Christopher Best <bestchris@gmail.com>
 description: Simple sortable DOM elements in Dart using HTML5 drag and drop
 homepage: https://github.com/sirctseb/Assortment
