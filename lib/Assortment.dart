@@ -1,4 +1,7 @@
-part of Tabasci;
+library Assortment;
+
+import "dart:html";
+import "dart:async";
 
 // TODO can we subclass from Event?
 /// An event that occurs during a drag on a sortable element
