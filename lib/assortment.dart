@@ -64,6 +64,9 @@ class Assortment {
   /// Stream of evenst that occur when a drag ends
   Stream<AssortmentEvent> get onDragEnd => _dragEndStreamController.stream;
 
+  bool get isDragging => _dragging;
+  bool _dragging = false;
+
   /// Add an element to the assortment
   void addElement(Element element) {
     // add to the element set
@@ -74,6 +77,7 @@ class Assortment {
 
     // add drag start handler
     element.onDragStart.listen((event) {
+      _dragging = true;
       // use the drag icon for moving
       event.dataTransfer.effectAllowed = "move";
       // set the drag element
@@ -119,6 +123,7 @@ class Assortment {
 
     // add end handler
     element.onDragEnd.listen((event) {
+      _dragging = false;
       // add assortment event to stream
       _dragEndStreamController.add(new AssortmentEvent._(event, _dragElement));
     });
