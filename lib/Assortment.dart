@@ -3,9 +3,7 @@ library Assortment;
 import "dart:html";
 import "dart:async";
 
-// TODO can we subclass from Event?
 /// An event that occurs during a drag on a sortable element
-// TODO event type code?
 class AssortmentEvent {
   /// The [MouseEvent] that instigated this event
   MouseEvent mouseEvent;
@@ -41,10 +39,15 @@ class Assortment {
 
   // Expose event streams
   StreamController<AssortmentEvent> _dragStartStreamController = new StreamController<AssortmentEvent>();
+  /// Stream of events that occur when drags start
   Stream<AssortmentEvent> get onDragStart => _dragStartStreamController.stream;
+
   StreamController<AssortmentEvent> _dragEnterStreamController = new StreamController<AssortmentEvent>();
+  /// Stream of events that occur when drags enter an element in the assortment
   Stream<AssortmentEvent> get onDragEnter => _dragEnterStreamController.stream;
+
   StreamController<AssortmentEvent> _dragEndStreamController = new StreamController<AssortmentEvent>();
+  /// Stream of evenst that occur when a drag ends
   Stream<AssortmentEvent> get onDragEnd => _dragEndStreamController.stream;
 
   /// Add an element to the assortment
@@ -52,7 +55,7 @@ class Assortment {
     // add to the element set
     _elements.add(element);
 
-    // make line draggable
+    // make element draggable
     element.attributes["draggable"] = "true";
 
     // add drag start handler
@@ -62,7 +65,6 @@ class Assortment {
       // set the drag element
       _dragElement = event.currentTarget;
       // add assortment event to stream
-      // TODO only if subscriber?
       _dragStartStreamController.add(new AssortmentEvent(event, _dragElement));
     });
 
@@ -86,8 +88,10 @@ class Assortment {
 
       // get the index of the element begin dragged
       int dragIndex = parent.children.indexOf(_dragElement);
+
       // get the index of the element being dragged into
       int preIndex = parent.children.indexOf(event.currentTarget);
+
       // move the dragged element before or after the entered element depending on their positions
       if(dragIndex < preIndex) {
         (event.currentTarget as Element).insertAdjacentElement("afterEnd", _dragElement);
