@@ -14,7 +14,7 @@ class AssortmentEvent {
   /// The [Element] the cursor is coming from
   Element fromElement;
 
-  AssortmentEvent(MouseEvent this.mouseEvent, Element this.dragElement,
+  AssortmentEvent._(MouseEvent this.mouseEvent, Element this.dragElement,
       { Element this.enterElement, Element this.fromElement }) {}
 }
 
@@ -65,7 +65,7 @@ class Assortment {
       // set the drag element
       _dragElement = event.currentTarget;
       // add assortment event to stream
-      _dragStartStreamController.add(new AssortmentEvent(event, _dragElement));
+      _dragStartStreamController.add(new AssortmentEvent._(event, _dragElement));
     });
 
     // prevent the animation that occurs when a drag fails
@@ -100,13 +100,13 @@ class Assortment {
       }
 
       // add assortment event to stream
-      _dragEnterStreamController.add(new AssortmentEvent(event, _dragElement, enterElement: event.currentTarget, fromElement: _fromElement));
+      _dragEnterStreamController.add(new AssortmentEvent._(event, _dragElement, enterElement: event.currentTarget, fromElement: _fromElement));
     });
 
     // add end handler
     element.onDragEnd.listen((event) {
       // add assortment event to stream
-      _dragEndStreamController.add(new AssortmentEvent(event, _dragElement));
+      _dragEndStreamController.add(new AssortmentEvent._(event, _dragElement));
     });
   }
   /// Add a set of elements to the assortment
