@@ -1,0 +1,322 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>Assortment class / Assortment Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="Assortment" data-type="Assortment">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../Assortment.html">Assortment</a> &rsaquo; <a href="../Assortment/Assortment.html">Assortment</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../Assortment.html">Assortment</a></h2><ul class="icon">
+<li><div class="icon-class"></div><strong>Assortment</strong></li>
+<li><a href="../Assortment/AssortmentEvent.html"><div class="icon-class"></div>AssortmentEvent</a></li>
+</ul>
+<h2><div class="icon-library"></div><a href="../metadata.html">metadata</a></h2></div>
+<div class="content">
+        <h2><strong>Assortment</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>A simple collection of elements that can be sorted by dragging and dropping</p>
+<pre class="source">
+class Assortment {
+
+ /// Construct an assortment within parent
+ Assortment(Element parent) {
+   _parent = parent;
+ }
+
+ Element _parent;
+ /// The parent element of the sortable elements
+ Element get parent =&gt; _parent;
+
+ // The set of elements that are sortable
+ Set&lt;Element&gt; _elements = new Set();
+ // The last element that the cursor entered
+ Element _fromElement;
+ // The element begin dragged
+ Element _dragElement;
+
+ // Expose event streams
+ StreamController&lt;AssortmentEvent&gt; _dragStartStreamController = new StreamController&lt;AssortmentEvent&gt;();
+ /// Stream of events that occur when drags start
+ Stream&lt;AssortmentEvent&gt; get onDragStart =&gt; _dragStartStreamController.stream;
+
+ StreamController&lt;AssortmentEvent&gt; _dragEnterStreamController = new StreamController&lt;AssortmentEvent&gt;();
+ /// Stream of events that occur when drags enter an element in the assortment
+ Stream&lt;AssortmentEvent&gt; get onDragEnter =&gt; _dragEnterStreamController.stream;
+
+ StreamController&lt;AssortmentEvent&gt; _dragEndStreamController = new StreamController&lt;AssortmentEvent&gt;();
+ /// Stream of evenst that occur when a drag ends
+ Stream&lt;AssortmentEvent&gt; get onDragEnd =&gt; _dragEndStreamController.stream;
+
+ bool get isDragging =&gt; _dragging;
+ bool _dragging = false;
+
+ /// Add an element to the assortment
+ void addElement(Element element) {
+   // add to the element set
+   _elements.add(element);
+
+   // make element draggable
+   element.attributes["draggable"] = "true";
+
+   // add drag start handler
+   element.onDragStart.listen((event) {
+     _dragging = true;
+     // use the drag icon for moving
+     event.dataTransfer.effectAllowed = "move";
+     // set the drag element
+     _dragElement = event.currentTarget;
+     // add assortment event to stream
+     _dragStartStreamController.add(new AssortmentEvent._(event, _dragElement));
+   });
+
+   // prevent the animation that occurs when a drag fails
+   element.onDragOver.listen((event) {
+     event.preventDefault();
+   });
+
+   // add enter handler
+   // TODO check that dragged element is in the assortment
+   element.onDragEnter.listen((MouseEvent event) {
+
+     // cache the current from element
+     Element fromElement = _fromElement;
+
+     // update the from element
+     _fromElement = event.target;
+
+     // if we are moving within a single sortable element, bail
+     if((event.currentTarget as Element).contains(fromElement)) return;
+
+     // get the index of the element begin dragged
+     int dragIndex = parent.children.indexOf(_dragElement);
+
+     // get the index of the element being dragged into
+     int preIndex = parent.children.indexOf(event.currentTarget);
+
+     // move the dragged element before or after the entered element depending on their positions
+     if(dragIndex &lt; preIndex) {
+       (event.currentTarget as Element).insertAdjacentElement("afterEnd", _dragElement);
+     } else {
+       (event.currentTarget as Element).insertAdjacentElement("beforeBegin", _dragElement);
+     }
+
+     // add assortment event to stream
+     _dragEnterStreamController.add(new AssortmentEvent._(event, _dragElement, enterElement: event.currentTarget, fromElement: _fromElement));
+   });
+
+   // add end handler
+   element.onDragEnd.listen((event) {
+     _dragging = false;
+     // add assortment event to stream
+     _dragEndStreamController.add(new AssortmentEvent._(event, _dragElement));
+   });
+ }
+ /// Add a set of elements to the assortment
+ void addElements(Iterable&lt;Element&gt; elements) {
+   // add individually
+   elements.forEach((element) =&gt; addElement(element));
+ }
+}
+</pre>
+</div>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="">
+<button class="show-code">Code</button>
+new <strong>Assortment</strong>(Element parent) <a class="anchor-link" href="#"
+              title="Permalink to Assortment.Assortment">#</a></h4>
+<div class="doc">
+<p>Construct an assortment within parent</p>
+<pre class="source">
+Assortment(Element parent) {
+ _parent = parent;
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="isDragging">
+<button class="show-code">Code</button>
+final bool         <strong>isDragging</strong> <a class="anchor-link"
+            href="#isDragging"
+            title="Permalink to Assortment.isDragging">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+bool get isDragging =&gt; _dragging;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="onDragEnd">
+<button class="show-code">Code</button>
+final Stream&lt;<a href="../Assortment/AssortmentEvent.html">AssortmentEvent</a>&gt;         <strong>onDragEnd</strong> <a class="anchor-link"
+            href="#onDragEnd"
+            title="Permalink to Assortment.onDragEnd">#</a>
+        </h4>
+        <div class="doc">
+<p>Stream of evenst that occur when a drag ends</p>
+<pre class="source">
+Stream&lt;AssortmentEvent&gt; get onDragEnd =&gt; _dragEndStreamController.stream;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="onDragEnter">
+<button class="show-code">Code</button>
+final Stream&lt;<a href="../Assortment/AssortmentEvent.html">AssortmentEvent</a>&gt;         <strong>onDragEnter</strong> <a class="anchor-link"
+            href="#onDragEnter"
+            title="Permalink to Assortment.onDragEnter">#</a>
+        </h4>
+        <div class="doc">
+<p>Stream of events that occur when drags enter an element in the assortment</p>
+<pre class="source">
+Stream&lt;AssortmentEvent&gt; get onDragEnter =&gt; _dragEnterStreamController.stream;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="onDragStart">
+<button class="show-code">Code</button>
+final Stream&lt;<a href="../Assortment/AssortmentEvent.html">AssortmentEvent</a>&gt;         <strong>onDragStart</strong> <a class="anchor-link"
+            href="#onDragStart"
+            title="Permalink to Assortment.onDragStart">#</a>
+        </h4>
+        <div class="doc">
+<p>Stream of events that occur when drags start</p>
+<pre class="source">
+Stream&lt;AssortmentEvent&gt; get onDragStart =&gt; _dragStartStreamController.stream;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="parent">
+<button class="show-code">Code</button>
+final Element         <strong>parent</strong> <a class="anchor-link"
+            href="#parent"
+            title="Permalink to Assortment.parent">#</a>
+        </h4>
+        <div class="doc">
+<p>The parent element of the sortable elements</p>
+<pre class="source">
+Element get parent =&gt; _parent;
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="addElement">
+<button class="show-code">Code</button>
+void <strong>addElement</strong>(Element element) <a class="anchor-link" href="#addElement"
+              title="Permalink to Assortment.addElement">#</a></h4>
+<div class="doc">
+<p>Add an element to the assortment</p>
+<pre class="source">
+void addElement(Element element) {
+ // add to the element set
+ _elements.add(element);
+
+ // make element draggable
+ element.attributes["draggable"] = "true";
+
+ // add drag start handler
+ element.onDragStart.listen((event) {
+   _dragging = true;
+   // use the drag icon for moving
+   event.dataTransfer.effectAllowed = "move";
+   // set the drag element
+   _dragElement = event.currentTarget;
+   // add assortment event to stream
+   _dragStartStreamController.add(new AssortmentEvent._(event, _dragElement));
+ });
+
+ // prevent the animation that occurs when a drag fails
+ element.onDragOver.listen((event) {
+   event.preventDefault();
+ });
+
+ // add enter handler
+ // TODO check that dragged element is in the assortment
+ element.onDragEnter.listen((MouseEvent event) {
+
+   // cache the current from element
+   Element fromElement = _fromElement;
+
+   // update the from element
+   _fromElement = event.target;
+
+   // if we are moving within a single sortable element, bail
+   if((event.currentTarget as Element).contains(fromElement)) return;
+
+   // get the index of the element begin dragged
+   int dragIndex = parent.children.indexOf(_dragElement);
+
+   // get the index of the element being dragged into
+   int preIndex = parent.children.indexOf(event.currentTarget);
+
+   // move the dragged element before or after the entered element depending on their positions
+   if(dragIndex &lt; preIndex) {
+     (event.currentTarget as Element).insertAdjacentElement("afterEnd", _dragElement);
+   } else {
+     (event.currentTarget as Element).insertAdjacentElement("beforeBegin", _dragElement);
+   }
+
+   // add assortment event to stream
+   _dragEnterStreamController.add(new AssortmentEvent._(event, _dragElement, enterElement: event.currentTarget, fromElement: _fromElement));
+ });
+
+ // add end handler
+ element.onDragEnd.listen((event) {
+   _dragging = false;
+   // add assortment event to stream
+   _dragEndStreamController.add(new AssortmentEvent._(event, _dragElement));
+ });
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="addElements">
+<button class="show-code">Code</button>
+void <strong>addElements</strong>(Iterable&lt;Element&gt; elements) <a class="anchor-link" href="#addElements"
+              title="Permalink to Assortment.addElements">#</a></h4>
+<div class="doc">
+<p>Add a set of elements to the assortment</p>
+<pre class="source">
+void addElements(Iterable&lt;Element&gt; elements) {
+ // add individually
+ elements.forEach((element) =&gt; addElement(element));
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-10-30 14:22:11.971</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        
