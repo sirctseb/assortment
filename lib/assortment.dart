@@ -94,6 +94,7 @@ class Assortment {
       _dragging = true;
       // use the drag icon for moving
       event.dataTransfer.effectAllowed = "move";
+      event.dataTransfer.setData('text/plain', '');
       // set the drag element
       _dragElement = event.currentTarget;
       // add assortment event to stream
