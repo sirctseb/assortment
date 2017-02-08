@@ -16,6 +16,7 @@ library Assortment;
 
 import "dart:html";
 import "dart:async";
+import "package:dnd/dnd.dart";
 
 /// An event that occurs during a drag on a sortable element
 class AssortmentEvent {
@@ -86,6 +87,32 @@ class Assortment {
 
   /// Add an element to the assortment
   void addElement(Element element) {
+    var draggable =
+        new Draggable(element, avatarHandler: new AvatarHandler.clone());
+
+    draggable.onDragEnd.listen((DraggableEvent event) {
+      _dragEndStreamController.add(
+          new AssortmentEvent._(event.originalEvent, event.draggableElement));
+    });
+
+    var dropzone = new Dropzone(element);
+    dropzone.onDragOver.listen((DropzoneEvent event) {
+      swapElements(event.draggableElement, event.dropzoneElement);
+    });
+  }
+
+  /// Simple function to swap two elements.
+  void swapElements(Element elm1, Element elm2) {
+    var parent1 = elm1.parent;
+    var next1 = elm1.nextElementSibling;
+    var parent2 = elm2.parent;
+    var next2 = elm2.nextElementSibling;
+
+    parent1.insertBefore(elm2, next1);
+    parent2.insertBefore(elm1, next2);
+  }
+
+  void restOfAddElement(Element element) {
     // make element draggable
     element.attributes["draggable"] = "true";
 
